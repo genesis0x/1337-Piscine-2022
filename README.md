@@ -12,13 +12,6 @@ May Piscine 2022 from 1337 Med 42 Network.
 	  /*  Updated: 0000/00/00 by hahadiou        ####### ########   ########      ###.ma   */ 
 	  /*           	                                                                       */ 
 	  /* ********************************************************************************* */
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    [![hahadiou's 42 stats](https://badge.mediaplus.ma/darkgray/hahadiou)](https://github.com/oakoudad/badge42)
+	  
+	  
+[![hahadiou's 42 stats](https://badge.mediaplus.ma/darkgray/hahadiou)](https://github.com/oakoudad/badge42)
