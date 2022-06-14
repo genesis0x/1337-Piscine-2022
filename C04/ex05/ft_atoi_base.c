@@ -10,83 +10,105 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	check_base(char *base)
+int		ft_is_in_base(char c, char *base)
 {
-	int	bindex;
-	int	index;
-	int	tindex;
+	int		i;
 
-	bindex = 0;
-	index = 0;
-	while (base[bindex])
-		bindex++;
-	if (base[index] < 2)
+	i = 0;
+	while (base[i] != c)
+		i++;
+	if (base[i] == '\0')
 		return (0);
-	while (base[index])
+	else
+		return (1);
+}
+
+int		ft_get_int_from_base(char c, char *base)
+{
+	int		i;
+
+	i = 0;
+	while (base[i])
 	{
-		if (base[0] == '\0' || base[index] == '-' || base[index] == '+'
-			|| base[index] == ' ' || (base[index] >= 9 && base[index] <= 13))
-			return (0);
-		tindex = index + 1;
-		while (tindex < bindex)
+		if (base[i] == c)
 		{
-			if (base[index] == base[tindex])
-				return (0);
-			tindex++;
+			return (i);
 		}
-		index++;
+		i++;
+	}
+	return (i);
+}
+
+int		ft_check_base(char *base)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (base[i])
+		i++;
+	if (i < 2)
+		return (0);
+	i = 0;
+	while (base[i])
+	{
+		if (base[i] == '-' || base[i] == '+' || base[i] == '\f' ||
+				base[i] == '\t' || base[i] == ' ' || base[i] == '\n' ||
+				base[i] == '\r' || base[i] == '\v')
+			return (0);
+		j = i + 1;
+		while (base[j])
+		{
+			if (base[i] == base[j])
+				return (0);
+			j++;
+		}
+		i++;
 	}
 	return (1);
 }
 
-int	find_index(char j, char *base)
+int		skip_whitespace_minus(char *str, int *ptr_i)
 {
-	int	index;
+	int		minus_count;
+	int		i;
 
-	index = 0;
-	while (base[index])
+	i = 0;
+	while (str[i] == '\f' || str[i] == '\t' || str[i] == ' ' ||
+			str[i] == '\n' || str[i] == '\r' || str[i] == '\v')
+		i++;
+	minus_count = 0;
+	while (str[i] && (str[i] == '+' || str[i] == '-'))
 	{
-		if (base[index] == j)
-			return (index);
-		index++;
+		if (str[i] == '-')
+			minus_count++;
+		i++;
 	}
-	return (-1);
+	*ptr_i = i;
+	return (minus_count);
 }
 
-int	ft_strlen(char *str)
+int		ft_atoi_base(char *str, char *base)
 {
-	int	len;
+	int		i;
+	int		sign;
+	int		result;
+	int		base_divider;
 
-	len = 0;
-	while (str[len])
-		len++;
-	return (len);
-}
-
-int	ft_atoi_base(char *str, char *base)
-{
-	int	index;
-	int	total;
-	int	minus;
-
-	index = 0;
-	total = 0;
-	minus = 1;
-	while (str[index] == 32 || (str[index] >= 9 && str[index] <= 13))
-		index++;
-	while (str[index] == '-' || str[index] == '+')
+	i = 0;
+	while (base[i])
+		i++;
+	base_divider = i;
+	result = 0;
+	sign = 1;
+	if (skip_whitespace_minus(str, &i) % 2)
+		sign = -1;
+	while (str[i] && ft_is_in_base(str[i], base))
 	{
-		if (str[index] == '-')
-			minus *= -1;
-		index++;
+		result *= base_divider;
+		result += ft_get_int_from_base(str[i], base);
+		i++;
 	}
-	while (str[index])
-	{
-		if (find_index(str[index], base) == -1 || !check_base(base))
-			return (total * minus);
-		total *= ft_strlen(base);
-		total += find_index(str[index], base);
-		index++;
-	}
-	return (total * minus);
+	result *= sign;
+	return (result);
 }

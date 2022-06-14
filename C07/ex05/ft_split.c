@@ -12,84 +12,102 @@
 
 #include <stdlib.h>
 
-int	ft_is_charset(char str, char *charset)
+char	*ft_strncpy(char *dest, char *src, unsigned int n)
 {
-	while (*charset)
+	unsigned int		i;
+
+	i = 0;
+	while (src[i] && i < n)
 	{
-		if (str == *charset)
+		dest[i] = src[i];
+		i++;
+	}
+	while (i < n)
+	{
+		dest[i] = '\0';
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
+int		ft_is_separator(char c, char *charset)
+{
+	int		i;
+
+	i = 0;
+	while (charset[i])
+	{
+		if (c == charset[i])
 			return (1);
-		charset++;
+		i++;
 	}
 	return (0);
 }
 
-int	ft_wordlen(char *str, char *charset)
+char	*ft_get_next_str(char **pos_in_str, char *charset, int *next_str_len)
 {
-	int	i;
-
-	i = 0;
-	while (str[i] && ft_is_charset(str[i], charset) == 0)
-		i++;
-	return (i);
-}
-
-int	ft_wordcount(char *str, char *charset)
-{
-	int	i;
-	int	j;
-
-	j = 0;
-	while (*str)
-	{
-		while (*str && ft_is_charset(*str, charset) == 1)
-			str++;
-		i = ft_wordlen(str, charset);
-		str += i;
-		if (i)
-			j++;
-	}
-	return (j);
-}
-
-char	*ft_strcpy(char *src, int j)
-{
-	char	*dst;
 	int		i;
+	char	*str_start;
 
+	*next_str_len = 0;
+	str_start = 0;
 	i = 0;
-	dst = malloc((j + 1) * sizeof(char));
-	if (!dst)
-		return (0);
-	while (i < j && src[i])
+	while ((*pos_in_str)[i])
 	{
-		dst[i] = src[i];
+		if (ft_is_separator((*pos_in_str)[i], charset) && str_start != 0)
+		{
+			*pos_in_str = str_start + *next_str_len;
+			return (str_start);
+		}
+		else if (!ft_is_separator((*pos_in_str)[i], charset) && str_start == 0)
+			str_start = &(*pos_in_str)[i];
+		if (!ft_is_separator((*pos_in_str)[i], charset))
+			*next_str_len = *next_str_len + 1;
 		i++;
 	}
-	dst[i] = '\0';
-	return (dst);
+	*pos_in_str = str_start + *next_str_len;
+	if (*next_str_len == 0)
+		return (0);
+	return (str_start);
+}
+
+char	**ft_build_tab(char *str, char *charset)
+{
+	int		nb_str;
+	char	**strs;
+	int		next_str_len;
+	char	*pos_in_str;
+
+	nb_str = 0;
+	next_str_len = 0;
+	pos_in_str = str;
+	while (ft_get_next_str(&pos_in_str, charset, &next_str_len))
+		nb_str++;
+	if (!(strs = (char **)malloc(sizeof(char *) * (nb_str + 1))))
+		return (0);
+	return (strs);
 }
 
 char	**ft_split(char *str, char *charset)
 {
-	char		**dest;
-	int			size;
-	int			index;
-	int			j;
+	char	**strs;
+	int		next_str_len;
+	char	*next_str;
+	char	*pos_in_str;
+	int		i;
 
-	index = 0;
-	size = ft_wordcount(str, charset);
-	dest = malloc((size + 1) * sizeof(char *));
-	if (!dest)
+	if (!(strs = ft_build_tab(str, charset)))
 		return (0);
-	while (index < size)
+	i = 0;
+	pos_in_str = str;
+	while ((next_str = ft_get_next_str(&pos_in_str, charset, &next_str_len)))
 	{
-		while (ft_is_charset(*str, charset))
-			str++;
-		j = ft_wordlen(str, charset);
-		dest[index] = ft_strcpy(str, j);
-		str += j;
-		index++;
+		if (!(strs[i] = (char *)malloc(sizeof(char) * next_str_len + 1)))
+			return (0);
+		ft_strncpy(strs[i], next_str, next_str_len);
+		i++;
 	}
-	dest[size] = 0;
-	return (dest);
+	strs[i] = 0;
+	return (strs);
 }
