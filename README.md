@@ -1,5 +1,5 @@
 # 1337-Staff Comp-2022
-May Piscine 2022 from 1337 Med 42 Network.
+May Staff Comp 2022 from 1337 Med 42 Network.
 
 	  /* ********************************************************************************* */
 	  /*                                                                                   */
