@@ -1,13 +1,15 @@
 #include <stdio.h>
-char	**ft_split(char *str, char *charset);
 
-int	main(int ac, char **av)
+int     main(int ac, char **av)
 {
 	(void)ac;
-	char	**strs = ft_split(av[1], av[2]);
-	for (int i = 0; i < 2; i++)
+
+	char **arr = ft_split(av[1]);
+
+	int i = 0;
+	while (arr[i])
 	{
-		printf("%s\n", strs[i]);
+		printf("[%s]\n", arr[i]);
+		++i;
 	}
-	return (0);
 }
